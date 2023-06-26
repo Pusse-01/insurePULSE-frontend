@@ -39,7 +39,7 @@ function App() {
         {isLoggedIn ? (
           <>
             <SideDrawer onLogout={handleLogout} />
-            <div className="bg-gray-200 h-screen">
+            <div className="h-screen">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/reports" element={<Reports />} />
