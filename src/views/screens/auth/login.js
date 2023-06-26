@@ -1,5 +1,5 @@
 import React from 'react';
-import searchingSVG from '../../../assets/search image.svg';
+// import searchingSVG from '../../../assets/search image.svg';
 import LoginForm from '../../components/login_form';
 const Login = ({ handleLog }) => {
     return (

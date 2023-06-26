@@ -1,14 +1,9 @@
-import Home from '../../screens/home/home';
-import Reports from '../../screens/reports/reports';
+// import Home from '../../screens/home/home';
+// import Reports from '../../screens/reports/reports';
 
 import * as React from 'react';
-import { useState } from 'react';
+// import { useState } from 'react';
 import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    Navigate,
     useNavigate
 } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
@@ -28,9 +23,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import FindInPageIcon from '@mui/icons-material/FindInPage';
+// import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import UpgradeIcon from '@mui/icons-material/Upgrade';
+// import UpgradeIcon from '@mui/icons-material/Upgrade';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -106,7 +101,7 @@ export default function MiniDrawer({ onLogout }) {
     const navigate = useNavigate();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-    const [currentPage, setCurrentPage] = React.useState('Home');
+    // const [currentPage, setCurrentPage] = React.useState('Home');
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -114,16 +109,16 @@ export default function MiniDrawer({ onLogout }) {
 
     const handleDrawerClose = () => {
         setOpen(false);
-        setCurrentPage('Home');
+        // setCurrentPage('Home');
     };
 
-    const pageComponents = {
-        Home: <Home />,
-        Reports: <Reports />,
+    // const pageComponents = {
+    //     Home: <Home />,
+    //     Reports: <Reports />,
 
-        // Settings: <Settings />,
-        // Upgrade: <Upgrade />,
-    };
+    //     // Settings: <Settings />,
+    //     // Upgrade: <Upgrade />,
+    // };
 
     return (
 
