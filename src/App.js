@@ -7,6 +7,7 @@ import LoginPage from './views/screens/auth/login'
 import './App.css';
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ThemeProvider from './theme';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,22 +37,24 @@ function App() {
   };
   return (
     <div className="App">
-      <Router>
-        {isLoggedIn ? (
-          <>
-            <SideDrawer onLogout={handleLogout} />
-            <div className="h-screen">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/about" element={<About />} />
-              </Routes>
-            </div>
-          </>
-        ) : (
-          <LoginPage handleLog={handleLogin} />
-        )}
-      </Router>
+      <ThemeProvider>
+        <Router>
+          {isLoggedIn ? (
+            <>
+              <SideDrawer onLogout={handleLogout} />
+              <div className="h-screen">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/about" element={<About />} />
+                </Routes>
+              </div>
+            </>
+          ) : (
+            <LoginPage handleLog={handleLogin} />
+          )}
+        </Router>
+      </ThemeProvider>
     </div>
   );
 }

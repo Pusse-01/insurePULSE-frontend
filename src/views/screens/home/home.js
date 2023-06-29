@@ -4,7 +4,13 @@ import LineChart from '../../components/line_chart'
 import DenseTable from '../../components/dashboard_table'
 import Box from '@mui/material/Box';
 import PieChart from '../../components/pie_chart';
-import Grid from '@mui/material/Grid';
+import { Helmet } from 'react-helmet-async';
+import { faker } from '@faker-js/faker';
+// @mui
+import { useTheme } from '@mui/material/styles';
+import { Grid, Container, Typography } from '@mui/material';
+import Iconify from '../../components/iconify';
+import AppWidgetSummary from '../../components/AppWidgetSummary';
 
 function Home() {
     return (

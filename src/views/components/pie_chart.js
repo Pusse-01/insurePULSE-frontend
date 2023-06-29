@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import GWPxchart from './GWPxchart';
+import { useTheme } from '@mui/material/styles';
 
 const PieChart = () => {
     const [chartData, setChartData] = useState([]);
+    const theme = useTheme();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,9 +59,16 @@ const PieChart = () => {
     };
 
     return (
-        <div id="chart">
-            <ReactApexChart options={options} series={series} type="pie" />
-        </div>
+        <GWPxchart
+            title={"GWP x Channels"}
+            chartColors={[
+                theme.palette.primary.main,
+                theme.palette.info.main,
+                theme.palette.warning.main,
+                theme.palette.error.main,
+            ]}
+            chartData={chartData}
+        />
     );
 };
 

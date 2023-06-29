@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Typography,Container } from '@mui/material';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import LoopIcon from '@mui/icons-material/Loop';
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import AppWidgetSummary from './AppWidgetSummary';
+import { useTheme } from '@mui/material/styles';
 
 const Cards = () => {
     const [vals, setVals] = useState({});
@@ -28,9 +30,11 @@ const Cards = () => {
         fetchData();
     }, []);
 
+    const theme = useTheme();
+
     return (
-        <div className="flex justify-center mt-8">
-            <Card className="w-64 m-4">
+        <div className="flex justify-center mt-8 mb-10">
+            {/* <Card className="w-64 m-4">
                 <CardContent className="flex flex-col items-start">
                     <div className="flex  items-center mt-4">
                         <BusinessCenterIcon className="mr-2" color="primary" />
@@ -38,7 +42,6 @@ const Cards = () => {
                             New Business Count
                         </Typography>
                     </div>
-
                     {!isDataLoaded ? (
                         <Box sx={{ display: 'flex' }}>
                             <CircularProgress className="m-4" size={30} />
@@ -46,9 +49,7 @@ const Cards = () => {
                     ) : (
                         <Typography variant="h5" component="p" className="ml-2 mt-2" color="text.secondary">
                             {vals.New_Business}
-
                         </Typography>)}
-
                 </CardContent>
             </Card>
             <Card className="w-64 m-4">
@@ -104,10 +105,29 @@ const Cards = () => {
                     ) : (
                         <Typography variant="h5" component="p" className="ml-2 mt-2" color="text.secondary">
                             {vals.Endorsement}
-
                         </Typography>)}
                 </CardContent>
-            </Card>
+            </Card> */}
+        <Container maxWidth="xl">
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="New Business Count" total= {vals.New_Business} icon={'mdi:business'} isDataLoaded={isDataLoaded}/>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Renewal Count" total={vals.Renewal} color="info" icon={'mdi:sync'} isDataLoaded={isDataLoaded}/>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Cancellations" total={vals.Cancellation} color="warning" icon={'mdi:cancel'} isDataLoaded={isDataLoaded}/>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Endorsements" total={vals.Endorsement} color="error" icon={'mdi:office-building'} isDataLoaded={isDataLoaded}/>
+          </Grid>
+        </Grid>
+      </Container>
+
         </div>
     );
 };
