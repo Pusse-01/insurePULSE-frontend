@@ -24,6 +24,7 @@ function App() {
     // Perform login logic and set isLoggedIn to true
     setIsLoggedIn(true);
     localStorage.setItem('isLoggedIn', 'true');
+    window.location.href = '/';
   };
 
   // Function to handle user logout
