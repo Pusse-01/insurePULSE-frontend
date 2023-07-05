@@ -3,13 +3,23 @@ import 'react-datepicker/dist/react-datepicker.css';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
-import { MenuItem, Select, Button, Modal } from '@mui/material';
+import { MenuItem, Select, Button, Modal, SvgIcon, Stack, Typography } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import GetAppRoundedIcon from '@mui/icons-material/GetAppRounded';
 import FormControl from '@mui/material/FormControl';
 // import InputLabel from '@mui/material/InputLabel';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-
+import { Table, Container, Avatar, TableBody, Popover, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, Checkbox, Card } from '@mui/material';
+import Box from '@mui/material/Box';
+import { DataGrid } from '@mui/x-data-grid';
+import USERLIST from '../../_mock/user';
+import Label from '../components/label';
+import Iconify from '../components/iconify';
+import { UserListHead, UserListToolbar } from '../components/user';
+import Scrollbar from '../components/scrollbar';
+import { filter } from 'lodash';
+import FolderIcon from '@mui/icons-material/Folder';
+import { green, pink } from '@mui/material/colors';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 // import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -27,6 +37,7 @@ function Reports() {
     // const [generatedReport, setGeneratedReport] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState("");
+    const [loading, setLoading] = useState(false)
 
 
     const location = useLocation();
@@ -40,7 +51,8 @@ function Reports() {
 
     const fetchDirectoryPaths = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:8080/directories');
+            setLoading(true)
+            const response = await fetch('http://127.0.0.1:8000/directories');
             const data = await response.json();
 
             const directories = {};
@@ -73,14 +85,17 @@ function Reports() {
             });
 
             setDirectories(directories);
+            setLoading(false)
         } catch (error) {
             console.error('Error fetching directory paths:', error);
+            setLoading(false)
         }
     };
 
 
 
     const handleFormatChange = (event, path) => {
+        setLoading(true)
         const format = event.target.value;
 
         const requestBody = {
@@ -107,8 +122,10 @@ function Reports() {
                 link.click();
 
                 link.remove();
+                setLoading(false)
             })
             .catch((error) => {
+                setLoading(false)
                 console.error('Error:', error);
             });
     };
@@ -182,6 +199,99 @@ function Reports() {
 
     //     return null;
     // };
+    const TABLE_HEAD = [
+        { id: 'name', label: 'Name', alignCenter: true },
+        { id: 'company', label: 'User', alignRight: false },
+        { id: 'role', label: 'Status', alignRight: false },
+        { id: 'isVerified', label: 'Action', alignRight: false },
+        { id: '' },
+    ];
+
+    // ----------------------------------------------------------------------
+
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function getComparator(order, orderBy) {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(a, b, orderBy)
+            : (a, b) => -descendingComparator(a, b, orderBy);
+    }
+
+    function applySortFilter(array, comparator, query) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        if (query) {
+            return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+        }
+        return stabilizedThis.map((el) => el[0]);
+    }
+
+
+    const [open, setOpen] = useState(null);
+
+    const [page, setPage] = useState(0);
+
+    const [order, setOrder] = useState('asc');
+
+    const [selected, setSelected] = useState([]);
+
+    const [orderBy, setOrderBy] = useState('name');
+
+    const [filterName, setFilterName] = useState('');
+
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    const handleOpenMenu = (event) => {
+        setOpen(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setOpen(null);
+    };
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelecteds = USERLIST.map((n) => n.name);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
+    };
+
+    const handleClick = (event, name) => {
+        const selectedIndex = selected.indexOf(name);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, name);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+        }
+        setSelected(newSelected);
+    };
+
+    const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
 
     const renderTable = () => {
         const currentDirectory = getDirectoryByPath(currentPath);
@@ -194,101 +304,193 @@ function Reports() {
                 .sort((a, b) => new Date(b.item.modified) - new Date(a.item.modified)); // Sort items in descending order based on modified date
 
             return (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell></TableCell>
-                                <TableCell>Name</TableCell>
-                                {/* <TableCell>Type</TableCell> */}
-                                {/* <TableCell>Created</TableCell> */}
-                                {/* <TableCell>Modified</TableCell> */}
-                                <TableCell>User</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {sortedItems.map(({ name, item }) => {
-                                const path = currentPath === '' ? name : `${currentPath}/${name}`;
-                                const isFile = typeof item === 'object' && item !== null && item.type === 'file'; // Check if it is a file
-                                const isFolder = typeof item === 'object' && item !== null && item.type === 'folder'; // Check if it is a folder
+                <>
+                    <Container sx={{ overflowY: 'hidden' }}>
+                        <Card >
+                            <TableContainer sx={{ minWidth: 800, }}>
+                                <Table>
+                                    <UserListHead
+                                        order={order}
+                                        orderBy={orderBy}
+                                        headLabel={TABLE_HEAD}
+                                        rowCount={USERLIST.length}
+                                        numSelected={selected.length}
+                                        onRequestSort={handleRequestSort}
+                                        onSelectAllClick={handleSelectAllClick}
+                                    />
+                                    <TableBody>
+                                        {loading &&
+                                            <div style={styles.overlayBox}>
+                                                <CircularProgress className="ml-20" sx={{ zIndex: 9999 }} size={40} />
+                                            </div>
+                                        }
+                                        {sortedItems.map(({ name, item }) => {
+                                            const path = currentPath === '' ? name : `${currentPath}/${name}`;
+                                            const isFile = typeof item === 'object' && item !== null && item.type === 'file'; // Check if it is a file
+                                            const isFolder = typeof item === 'object' && item !== null && item.type === 'folder'; // Check if it is a folder
 
-                                const dateTime = new Date(item.modified);
+                                            const dateTime = new Date(item.modified);
 
-                                const formattedDateTime = dateTime.toLocaleString(undefined, {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: 'numeric',
-                                    minute: 'numeric',
-                                    second: 'numeric',
-                                });
+                                            const formattedDateTime = dateTime.toLocaleString(undefined, {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                second: 'numeric',
+                                            });
+                                            if (isFile) {
+                                                const generatedBy = `Generated by ${item.user} at ${formattedDateTime}`;
+                                                return (
+                                                    <TableRow hover key={path} tabIndex={-1} role="checkbox" >
+                                                        <TableCell padding="">
+                                                            <Avatar sx={{ width: 30, height: 30, bgcolor: green[500], zIndex: 100 }}>
+                                                                <AssessmentIcon sx={{ width: 20, height: 20, }} />
+                                                            </Avatar>                                                        </TableCell>
 
-                                if (isFile) {
-                                    const generatedBy = `Generated by ${item.user} at ${formattedDateTime}`;
-                                    return (
-                                        <TableRow key={path}>
-                                            <TableCell>
-                                                <DescriptionIcon className="text-gray-500 mr-2" />
-                                            </TableCell>
-                                            <TableCell>{name}</TableCell>
-                                            <TableCell>{item.user}</TableCell>
-                                            <TableCell>
-                                                {item.status === 'generated' ? (
-                                                    generatedBy
-                                                ) : (
-                                                    <span className="text-gray-500">File is generating...</span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                {item.status === 'generated' && (
-                                                    <FormControl sx={{ m: 1, minWidth: 20 }} size="small">
-                                                        <Select
-                                                            id="demo-select-small"
-                                                            value="download"
-                                                            onChange={(event) => handleFormatChange(event, path)}
-                                                            className="text-gray-600 pl-2"
-                                                            IconComponent={GetAppRoundedIcon}
-                                                        >
-                                                            <MenuItem value="csv">CSV</MenuItem>
-                                                            <MenuItem value="xlsx">Excel</MenuItem>
-                                                            <MenuItem value="pdf">PDF</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                }
+                                                        <TableCell component="th" scope="row" padding="none">
+                                                            {name}
+                                                        </TableCell>
 
-                                if (isFolder) {
-                                    return (
-                                        <TableRow hover sx={{ cursor: 'pointer' }} key={path}>
-                                            <TableCell>
-                                                <FolderOpenOutlinedIcon />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Link
-                                                    key={path}
-                                                    to={`/reports?path=${encodeURIComponent(path)}`}
-                                                    className="flex flex-row block "
-                                                >
-                                                    <h2 className="font-bold mb-2 ml-3">{name}</h2>
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell>{item.user}</TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    );
-                                }
+                                                        <TableCell align="left">{item.user}</TableCell>
 
-                                return null;
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                                                        <TableCell align={item.status !== 'generated' ? 'center' : 'left'}>
+                                                            {item.status === 'generated' ? (
+                                                                generatedBy
+                                                            ) : (
+                                                                <CircularProgress size={20} />
+                                                            )}
+                                                        </TableCell>
+
+                                                        {/* <TableCell align="left">
+                                                                {item.status === 'generated' && (
+                                                                    <FormControl sx={{ m: 1, minWidth: 20, }} className='text-center' size="small">
+                                                                        <Select
+                                                                            id="demo-select-small"
+                                                                            displayEmpty
+                                                                            value="download"
+                                                                            renderValue={(value) => {
+                                                                                return (
+                                                                                    <Box sx={{ display: "flex", gap: 1 }}>
+                                                                                        <SvgIcon color="primary">
+                                                                                            <GetAppRoundedIcon />
+                                                                                        </SvgIcon>
+                                                                                    </Box>
+                                                                                );
+                                                                            }}
+
+                                                                            onChange={(event) => handleFormatChange(event, path)}
+                                                                            className="text-gray-600 p-0 flex justify-center content-center"
+                                                                        // IconComponent={GetAppRoundedIcon}
+                                                                        >
+                                                                            <MenuItem value="csv">CSV</MenuItem>
+                                                                            <MenuItem value="xlsx">Excel</MenuItem>
+                                                                            <MenuItem value="pdf">PDF</MenuItem>
+                                                                        </Select>
+                                                                    </FormControl>
+                                                                )}
+                                                            </TableCell> */}
+                                                        <TableCell align="right">
+                                                            <IconButton size="small" sx={{ justifyContent: 'center', alignItems: 'center', width: 40, height: 40 }} color="inherit" >
+                                                                {item.status === 'generated' && (
+                                                                    <FormControl sx={{ m: 1, minWidth: 20, }} className='text-center' size="small">
+                                                                        <Select
+                                                                            id="demo-select-small"
+                                                                            displayEmpty
+                                                                            sx={{ '& > fieldset': { border: 'none' } }}
+                                                                            style={{}}
+                                                                            value="download"
+                                                                            inputProps={{ IconComponent: () => null }}
+                                                                            renderValue={(value) => {
+                                                                                return (
+                                                                                    <Iconify icon={'eva:download-fill'} />
+                                                                                );
+                                                                            }}
+
+                                                                            onChange={(event) => handleFormatChange(event, path)}
+                                                                            className="text-gray-600 p-0 flex justify-center content-center"
+                                                                        // IconComponent={GetAppRoundedIcon}
+                                                                        >
+                                                                            <MenuItem value="csv">
+                                                                                <Iconify icon={'eva:file-fill'} sx={{ mr: 2 }} />
+                                                                                CSV
+                                                                            </MenuItem>
+                                                                            <MenuItem value="xlsx">
+                                                                                <Iconify icon={'eva:file-fill'} sx={{ mr: 2 }} />
+                                                                                Excel
+                                                                            </MenuItem>
+                                                                            <MenuItem value="pdf">
+                                                                                <Iconify icon={'eva:file-fill'} sx={{ mr: 2 }} />
+                                                                                PDF
+                                                                            </MenuItem>
+                                                                        </Select>
+                                                                    </FormControl>
+                                                                )}
+                                                            </IconButton>
+                                                        </TableCell>
+                                                        <TableCell align="left">
+                                                            <Label color={(item.status !== 'generated' && 'error') || 'success'}>{item.status}</Label>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            }
+                                            if (isFolder) {
+                                                return (
+                                                    <TableRow hover key={path} tabIndex={-1} role="checkbox" >
+                                                        <TableCell padding="">
+                                                            <Avatar sx={{ width: 30, height: 30, bgcolor: '#2065D1', zIndex: 100 }}>
+                                                                <FolderIcon sx={{ width: 20, height: 20 }} />
+                                                            </Avatar>
+                                                        </TableCell>
+                                                        <TableCell align="left" component="th" scope="row" padding="none">
+                                                            <Link
+                                                                key={path}
+                                                                to={`/reports?path=${encodeURIComponent(path)}`}
+                                                                className="flex flex-row block  w-100%"
+                                                            >
+                                                                <Typography className="font-sans font-medium w-full pl-2">{name}</Typography>
+                                                            </Link>
+                                                        </TableCell>
+                                                        <TableCell align="left" component="th" scope="row" >
+                                                            <Typography className='font-sans font-medium' noWrap>
+                                                                {item.user}
+                                                            </Typography>
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row" >
+
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row" padding="none">
+
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row" padding="none">
+
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row" padding="none">
+
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row" padding="none">
+
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            }
+
+                                            return null;
+
+                                        })}
+                                        {/* {emptyRows > 0 && (
+                                                <TableRow style={{ height: 53 * emptyRows }}>
+                                                    <TableCell colSpan={6} />
+                                                </TableRow>
+                                            )} */}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Card>
+                    </Container>
+
+
+                </>
             );
         }
 
@@ -423,6 +625,37 @@ function Reports() {
                 className="mx-auto text-left">{renderTable()}</div>
         </div>
     );
+}
+
+let styles = {
+    tableHeaderCells: {
+        backgroundColor: '#FAFAFA',
+        color: '#202125',
+        borderColor: '#F0F0F0',
+        borderRightWidth: 1.7,
+        padding: 5,
+        textAlign: 'center'
+    },
+    tableCellBorder: {
+        borderColor: '#F0F0F0',
+        borderRightWidth: 1.7,
+        textAlign: 'center',
+        padding: 10
+    },
+    overlayBox: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        color: 'white',
+        backgroundColor: '#F0F0F0',
+        opacity: .8,
+        width: '100%',
+        height: '150%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 }
 
 export default Reports;
