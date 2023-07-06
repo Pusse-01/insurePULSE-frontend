@@ -17,6 +17,9 @@
     "rules": {
         "react/jsx-uses-vars": "error",
         "react/jsx-uses-react": "error",
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": "off",
+        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+        "react/display-name": "off"
     }
 }
