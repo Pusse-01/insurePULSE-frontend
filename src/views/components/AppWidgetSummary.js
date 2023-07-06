@@ -6,7 +6,6 @@ import { Box, Card, CircularProgress, Typography } from '@mui/material';
 import { fShortenNumber } from '../../utils/formatNumber';
 // components
 import Iconify from '../components/iconify';
-import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -32,9 +31,6 @@ AppWidgetSummary.propTypes = {
 };
 
 export default function AppWidgetSummary({ title, total, icon, isDataLoaded, color = 'primary', sx, ...other }) {
-  useEffect(()=>{
-    console.log("isdataLoaded "+isDataLoaded)
-  }, [])
   return (
     <Card
       sx={{

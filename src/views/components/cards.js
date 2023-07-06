@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Card, CardContent, Grid, Typography,Container } from '@mui/material';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import LoopIcon from '@mui/icons-material/Loop';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import { Grid, Container } from '@mui/material';
 import AppWidgetSummary from './AppWidgetSummary';
-import { useTheme } from '@mui/material/styles';
 
 const Cards = () => {
     const [vals, setVals] = useState({});
@@ -29,8 +21,6 @@ const Cards = () => {
 
         fetchData();
     }, []);
-
-    const theme = useTheme();
 
     return (
         <div className="flex justify-center mt-8 mb-10">
