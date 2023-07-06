@@ -32,9 +32,6 @@ AppWidgetSummary.propTypes = {
 };
 
 export default function AppWidgetSummary({ title, total, icon, isDataLoaded, color = 'primary', sx, ...other }) {
-  useEffect(()=>{
-    console.log("isdataLoaded "+isDataLoaded)
-  }, [])
   return (
     <Card
       sx={{
