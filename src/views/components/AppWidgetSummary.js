@@ -6,7 +6,6 @@ import { Box, Card, CircularProgress, Typography } from '@mui/material';
 import { fShortenNumber } from '../../utils/formatNumber';
 // components
 import Iconify from '../components/iconify';
-import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
