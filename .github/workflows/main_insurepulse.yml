@@ -23,9 +23,8 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-         npm install
-         CI=false npm run build
-
+          npm install
+          CI=false npm run build
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
@@ -51,5 +50,5 @@ jobs:
         with:
           app-name: 'insurePULSE'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8E462A6342B246A8B9F09940F3758CEC }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A7840CD021CC4D639B1E357F559CE5C3 }}
           package: .
