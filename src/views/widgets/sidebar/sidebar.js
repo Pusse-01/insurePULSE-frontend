@@ -28,6 +28,8 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 // import UpgradeIcon from '@mui/icons-material/Upgrade';
 import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { Navbar, Button, Link, Text, Card, Radio } from "@nextui-org/react";
+import { AcmeLogo } from './AcmeLogo';
 
 
 const drawerWidth = 240;
@@ -126,7 +128,7 @@ export default function MiniDrawer({ onLogout }) {
             sx={{ display: 'flex' }}
         >
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            {/* <AppBar position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -156,7 +158,7 @@ export default function MiniDrawer({ onLogout }) {
                         <LogoutIcon />
                     </IconButton>
                 </Toolbar>
-            </AppBar>
+            </AppBar> */}
 
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
@@ -223,6 +225,28 @@ export default function MiniDrawer({ onLogout }) {
                 {/* {pageComponents[currentPage]} */}
 
             </Box>
+                <Navbar variant={"floating"} isBordered  style={{
+                    // backgroundColor: '#000000',
+                    // backgroundImage: 'linear-gradient(147deg, #000000 0%, #04619f 74%)',
+
+                    // opacity:0.7,
+                    $$navbarBackgroundColor: "#FFF7CD",
+                    $$navbarBlurBackgroundColor: "#FFF7CD"
+                }}>
+                    <Navbar.Brand >
+                        <AcmeLogo />
+                        <Text b color="inherit" hideIn="xs">
+                            INSUREPULSE
+                        </Text>
+                    </Navbar.Brand>
+                    <Navbar.Content>
+                        <Navbar.Item>
+                            <Button auto color="secondary" rounded flat icon={<LogoutIcon />}>
+                                Log out
+                            </Button>
+                        </Navbar.Item>
+                    </Navbar.Content>
+                </Navbar>
         </Box>
 
     );

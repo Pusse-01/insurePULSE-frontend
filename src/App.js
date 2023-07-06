@@ -8,6 +8,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ThemeProvider from './theme';
+import { NextUIProvider } from '@nextui-org/react';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,22 +39,24 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider>
-        <Router>
-          {isLoggedIn ? (
-            <>
-              <SideDrawer onLogout={handleLogout} />
-              <div className="h-screen">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/reports" element={<Reports />} />
-                  <Route path="/about" element={<About />} />
-                </Routes>
-              </div>
-            </>
-          ) : (
-            <LoginPage handleLog={handleLogin} />
-          )}
-        </Router>
+        <NextUIProvider>
+          <Router>
+            {isLoggedIn ? (
+              <>
+                <SideDrawer onLogout={handleLogout} />
+                <div className="h-screen"> 
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/about" element={<About />} />
+                  </Routes>
+                </div>
+              </>
+            ) : (
+              <LoginPage handleLog={handleLogin} />
+            )}
+          </Router>
+        </NextUIProvider>
       </ThemeProvider>
     </div>
   );
