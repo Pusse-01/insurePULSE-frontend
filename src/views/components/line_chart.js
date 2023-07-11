@@ -62,7 +62,7 @@ const LineChart = () => {
 
     useEffect(() => {
         // Fetch data from backend API
-        fetch('http://127.0.0.1:8000/gwp_counts')
+        fetch('http://20.65.116.20/gwp_counts')
             .then(response => response.json())
             .then(data => {
                 console.log(data)

@@ -11,7 +11,7 @@ const PieChart = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/piechart_data');
+                const response = await fetch('http://20.65.116.20/piechart_data');
                 const data = await response.json();
                 setChartData(data);
                 console.log(data)

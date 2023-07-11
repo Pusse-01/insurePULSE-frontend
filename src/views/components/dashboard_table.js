@@ -12,7 +12,7 @@ export default function DenseTable() {
 
     useEffect(() => {
         // Fetch data from the endpoint
-        fetch('http://127.0.0.1:8000/chanel_data')
+        fetch('http://20.65.116.20/chanel_data')
             .then((response) => response.json())
             .then((result) => {
                 setData(result);
