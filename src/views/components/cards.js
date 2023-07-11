@@ -10,7 +10,7 @@ const Cards = () => {
         const fetchData = async () => {
             try {
                 setDataLoaded(false)
-                const response = await fetch('http://127.0.0.1:8000/monthly_counts');
+                const response = await fetch('http://20.65.116.20/monthly_counts');
                 const data = await response.json();
                 setVals(data);
                 setDataLoaded(true)
@@ -98,25 +98,25 @@ const Cards = () => {
                         </Typography>)}
                 </CardContent>
             </Card> */}
-        <Container maxWidth="xl">
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Business Count" total= {vals.New_Business} icon={'mdi:business'} isDataLoaded={isDataLoaded}/>
-          </Grid>
+            <Container maxWidth="xl">
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary title="New Business Count" total={vals.New_Business} icon={'mdi:business'} isDataLoaded={isDataLoaded} />
+                    </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Renewal Count" total={vals.Renewal} color="info" icon={'mdi:sync'} isDataLoaded={isDataLoaded}/>
-          </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary title="Renewal Count" total={vals.Renewal} color="info" icon={'mdi:sync'} isDataLoaded={isDataLoaded} />
+                    </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Cancellations" total={vals.Cancellation} color="warning" icon={'mdi:cancel'} isDataLoaded={isDataLoaded}/>
-          </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary title="Cancellations" total={vals.Cancellation} color="warning" icon={'mdi:cancel'} isDataLoaded={isDataLoaded} />
+                    </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Endorsements" total={vals.Endorsement} color="error" icon={'mdi:office-building'} isDataLoaded={isDataLoaded}/>
-          </Grid>
-        </Grid>
-      </Container>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary title="Endorsements" total={vals.Endorsement} color="error" icon={'mdi:office-building'} isDataLoaded={isDataLoaded} />
+                    </Grid>
+                </Grid>
+            </Container>
 
         </div>
     );

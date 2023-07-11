@@ -2,17 +2,17 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MenuItem, Select, Button, Modal,  Typography } from '@mui/material';
+import { MenuItem, Select, Button, Modal, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 // import InputLabel from '@mui/material/InputLabel';
-import { Table, Container, Avatar, TableBody,  TableCell, TableContainer, TableRow, IconButton, Card } from '@mui/material';
+import { Table, Container, Avatar, TableBody, TableCell, TableContainer, TableRow, IconButton, Card } from '@mui/material';
 import USERLIST from '../../_mock/user';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
 import { UserListHead } from '../components/user';
 import { filter } from 'lodash';
 import FolderIcon from '@mui/icons-material/Folder';
-import { green} from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 
 // import Stack from '@mui/material/Stack';
@@ -45,7 +45,7 @@ function Reports() {
     const fetchDirectoryPaths = async () => {
         try {
             setLoading(true)
-            const response = await fetch('http://127.0.0.1:8000/directories');
+            const response = await fetch('http://20.65.116.20/directories');
             const data = await response.json();
 
             const directories = {};
@@ -96,7 +96,7 @@ function Reports() {
             format: format,
         };
 
-        fetch('http://127.0.0.1:8000/download-file', {
+        fetch('http://20.65.116.20/download-file', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -527,7 +527,7 @@ function Reports() {
         console.log(formData)
         setShowForm(false);
 
-        fetch('http://127.0.0.1:8000/generate', {
+        fetch('http://20.65.116.20/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
